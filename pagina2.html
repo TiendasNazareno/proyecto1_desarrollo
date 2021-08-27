@@ -62,41 +62,37 @@
         
     </section>
     
-     
+     <!-- Aqui voy a borrar-->
 	<script type="application/javascript">
-	function getIP(json) {
-			//document.write("My public IP address is: ", json.ip);
-
-	var ipJason = json.ip;
-			  //document.write("<br>IP: " , a);
-	sessionStorage.setItem('clave', json.ip);
-		console.log(json.ip);
-	}	
-	</script>
-	<script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>  
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>
+	
+	if(navigator.geolocation){
+		navigator.geolocation.getCurrentPosition(showPosition);
+	}
+	
+	
+	async function showPosition(position){
 		
-		var ip = sessionStorage.getItem('clave');
-		sessionStorage.clear();
-        //var ip = '181.174.105.198';
-        var access_key = '341db5b25e9b9a0dbe5ac47a0755d156';
+		console.log(position.coords.latitude);
+		console.log(position.coords.longitude);
 		
-        // get the API result via jQuery.ajax
-        $.ajax({
-            url: 'http://api.ipstack.com/' + ip + '?access_key=' + access_key,
-            dataType: 'json',
-            success: function (json) {
-
-                // output the "capital" object inside "location"
-                $("span").text(json.location);
-                //alert(json.country_name);
-				//document.write("Pais; ", json.country_name);
-				document.getElementById('pais').innerHTML = "Pais visitante: "+json.country_name;
-            }
-        });
-    </script>
+		let { latitude, longitude }	= position.coords;
+		
+		console.log(latitude);
+		console.log(longitude);
+		
+		
+		let response = await fetch(
+			'https://api.opencagedata.com/geocode/v1/json?q='+latitude+'+'+longitude+'&key=15c98a6b9b014a72881e9aade5455282'		
+		);
+		
+		let data = await response.json();
+		console.log(data.results[0].components.country);
+		
+		document.getElementById('pais').innerHTML = "Pais visitante: "+data.results[0].components.country;
+	}
+	
+</script>
+	<!-- Aqui voy a borrar-->
      <footer>
         <div class ="contenido">
             <p class="copy"> Tienda Nazareno &copy; 2021</p>
